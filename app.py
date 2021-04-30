@@ -68,7 +68,7 @@ def create_album(artist_id):
             if type(name) == str and type(genre) == str:
                 album_id = b64encode(name.encode()).decode('utf-8')[0:22]
                 album_exists = get_album(album_id).get_json()
-                if 'message' not in album_exists:
+                if 'message' in album_exists:
                     artist = artists_db.find_one({'artist_id': artist_id})['self']
                     tracks = 'https://tarea2-mjbraun.herokuapp.com/albums/' + album_id + '/tracks'
                     self_ = 'https://tarea2-mjbraun.herokuapp.com/albums/' + album_id
