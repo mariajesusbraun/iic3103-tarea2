@@ -48,13 +48,13 @@ def create_artist():
                 })
                 status = 201
             else:
-                response = json_util.dumps([{'message': 'artista ya existe', 'code': '409'}, artist_exists])
+                response = json_util.dumps(artist_exists)
                 status = 409
         else:
-            response = json_util.dumps({'message': 'input inválido', 'code': '400'})
+            response = json_util.dumps({'message': 'input invalido', 'code': '400'})
             status = 400
     else:
-        response = json_util.dumps({'message': 'input inválido', 'code': '400'})
+        response = json_util.dumps({'message': 'input invalido', 'code': '400'})
         status = 400
     return Response(response, mimetype='application/json', status=status)
 
@@ -91,13 +91,13 @@ def create_album(artist_id):
                     })
                     status = 201
                 else:
-                    response = json_util.dumps([{'message': 'álbum ya existe', 'code': '409'}, album_exists])
+                    response = json_util.dumps(album_exists)
                     status = 409
             else:
-                response = json_util.dumps({'message': 'input inválido', 'code': '400'})
+                response = json_util.dumps({'message': 'input invalido', 'code': '400'})
                 status = 400
         else:
-            response = json_util.dumps({'message': 'input inválido', 'code': '400'})
+            response = json_util.dumps({'message': 'input invalido', 'code': '400'})
             status = 400
     else:
         response = json_util.dumps({'message': 'artista no existe', 'code': '422'})
@@ -142,16 +142,16 @@ def create_track(album_id):
                     })
                     status = 201
                 else:
-                    response = json_util.dumps([{'message': 'canción ya existe', 'code': '409'}, track_exists])
+                    response = json_util.dumps(track_exists)
                     status = 409
             else:
-                response = json_util.dumps({'message': 'input inválido', 'code': '400'})
+                response = json_util.dumps({'message': 'input invalido', 'code': '400'})
                 status = 400
         else:
-            response = json_util.dumps({'message': 'input inválido', 'code': '400'})
+            response = json_util.dumps({'message': 'input invalido', 'code': '400'})
             status = 400
     else:
-        response = json_util.dumps({'message': 'álbum no existe', 'code': '422'})
+        response = json_util.dumps({'message': 'album no existe', 'code': '422'})
         status = 422
     return Response(response, mimetype='application/json', status=status)
 
@@ -219,7 +219,7 @@ def get_album(album_id):
         response = json_util.dumps(album)
         status = 200
     else:
-        response = json_util.dumps({'message': 'álbum no encontrado', 'code': '404'})
+        response = json_util.dumps({'message': 'album no encontrado', 'code': '404'})
         status = 404
     return Response(response, mimetype='application/json', status=status)
 
@@ -231,7 +231,7 @@ def get_tracks_from_album(album_id):
         response = json_util.dumps(tracks)
         status = 200
     else:
-        response = json_util.dumps({'message': 'álbum no encontrado', 'code': '404'})
+        response = json_util.dumps({'message': 'album no encontrado', 'code': '404'})
         status = 404
     return Response(response, mimetype='application/json', status=status)
 
@@ -276,10 +276,10 @@ def play_tracks_from_album(album_id):
             tracks_db.update_one({'track_id': track_id}, {'$set': {
                 'times_played': times_played
             }})
-        response = json_util.dumps({'message': 'canciones del álbum reproducidas'})
+        response = json_util.dumps({'message': 'canciones del album reproducidas'})
         status = 200
     else:
-        response = json_util.dumps({'message': 'álbum no encontrado', 'code': '404'})
+        response = json_util.dumps({'message': 'album no encontrado', 'code': '404'})
         status = 404
     return Response(response, mimetype='application/json', status=status)
 
@@ -328,10 +328,10 @@ def delete_album(album_id):
             for track in tracks:
                 delete_track(track['track_id'])
         albums_db.delete_one({'album_id': album_id})
-        response = json_util.dumps({'message': 'álbum eliminado'})
+        response = json_util.dumps({'message': 'album eliminado'})
         status = 204
     else:
-        response = json_util.dumps({'message': 'álbum no encontrado', 'code': '404'})
+        response = json_util.dumps({'message': 'album no encontrado', 'code': '404'})
         status = 404
     return Response(response, mimetype='application/json', status=status)
 
