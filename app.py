@@ -25,8 +25,8 @@ def create_artist():
         age = request.json['age']
         if type(name) == str and type(age) == int:
             artist_id = b64encode(name.encode()).decode('utf-8')[0:22]
-            artist = artists_db.find_one({'artist_id': artist_id})
-            if artist != None:
+            artist_exists = get_artist(artist_id).get_json()
+            if 'message' not in artist_exists:
                 albums = 'https://tarea2-mjbraun.herokuapp.com/artists/' + artist_id + '/albums'
                 tracks = 'https://tarea2-mjbraun.herokuapp.com/artists/' + artist_id + '/tracks'
                 self_ = 'https://tarea2-mjbraun.herokuapp.com/artists/' + artist_id
@@ -48,7 +48,7 @@ def create_artist():
                 })
                 status = 201
             else:
-                response = json_util.dumps(artist)
+                response = json_util.dumps(artist_exists)
                 status = 409
         else:
             response = json_util.dumps({'message': 'input invalido', 'code': '400'})
@@ -60,15 +60,15 @@ def create_artist():
 
 @app.route('/artists/<artist_id>/albums', methods=['POST'])
 def create_album(artist_id):
-    artist = artists_db.find_one({'artist_id': artist_id})
-    if artist != None:
+    artist_exists = get_artist(artist_id).get_json()
+    if 'message' not in artist_exists:
         if 'name' in request.json and 'genre' in request.json:
             name = request.json['name']
             genre = request.json['genre']
             if type(name) == str and type(genre) == str:
                 album_id = b64encode(name.encode()).decode('utf-8')[0:22]
-                album = albums_db.find_one({'album_id': album_id})
-                if album != None:
+                album_exists = get_album(album_id).get_json()
+                if 'message' not in album_exists:
                     artist = artists_db.find_one({'artist_id': artist_id})['self']
                     tracks = 'https://tarea2-mjbraun.herokuapp.com/albums/' + album_id + '/tracks'
                     self_ = 'https://tarea2-mjbraun.herokuapp.com/albums/' + album_id
@@ -91,7 +91,7 @@ def create_album(artist_id):
                     })
                     status = 201
                 else:
-                    response = json_util.dumps(album)
+                    response = json_util.dumps(album_exists)
                     status = 409
             else:
                 response = json_util.dumps({'message': 'input invalido', 'code': '400'})
@@ -106,15 +106,15 @@ def create_album(artist_id):
 
 @app.route('/albums/<album_id>/tracks', methods=['POST'])
 def create_track(album_id):
-    album = albums_db.find_one({'album_id': album_id})
-    if album != None:
+    album_exists = get_album(album_id).get_json()
+    if 'message' not in album_exists:
         if 'name' in request.json and 'duration' in request.json:
             name = request.json['name']
             duration = request.json['duration']
             if type(name) == str and type(duration) == float:
                 track_id = b64encode(name.encode()).decode('utf-8')[0:22]
-                track = tracks_db.find_one({'track_id': track_id})
-                if track != None:
+                track_exists = get_track(track_id).get_json()
+                if 'message' not in track_exists:
                     times_played = '0'
                     artist = albums_db.find_one({'album_id': album_id})['artist']
                     artist_id = albums_db.find_one({'album_id': album_id})['artist_id']
@@ -142,7 +142,7 @@ def create_track(album_id):
                     })
                     status = 201
                 else:
-                    response = json_util.dumps(track)
+                    response = json_util.dumps(track_exists)
                     status = 409
             else:
                 response = json_util.dumps({'message': 'input invalido', 'code': '400'})
