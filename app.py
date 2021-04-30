@@ -25,8 +25,8 @@ def create_artist():
         age = request.json['age']
         if type(name) == str and type(age) == int:
             artist_id = b64encode(name.encode()).decode('utf-8')[0:22]
-            artist_exists = get_artist(artist_id).get_json()
-            if 'message' not in artist_exists:
+            artist_exists = artists_db.find_one(artist_id)
+            if artist_exists != None:
                 albums = 'https://tarea2-mjbraun.herokuapp.com/artists/' + artist_id + '/albums'
                 tracks = 'https://tarea2-mjbraun.herokuapp.com/artists/' + artist_id + '/tracks'
                 self_ = 'https://tarea2-mjbraun.herokuapp.com/artists/' + artist_id
