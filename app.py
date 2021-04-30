@@ -114,7 +114,7 @@ def create_track(album_id):
             if type(name) == str and type(duration) == float:
                 track_id = b64encode(name.encode()).decode('utf-8')[0:22]
                 track_exists = get_track(track_id).get_json()
-                if 'message' not in track_exists:
+                if 'message' in track_exists:
                     times_played = '0'
                     artist = albums_db.find_one({'album_id': album_id})['artist']
                     artist_id = albums_db.find_one({'album_id': album_id})['artist_id']
