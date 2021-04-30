@@ -27,9 +27,9 @@ def create_artist():
             artist_id = b64encode(name.encode()).decode('utf-8')[0:22]
             artist_exists = get_artist(artist_id).get_json()
             if 'message' in artist_exists:
-                albums = 'http://localhost:5000/artists/' + artist_id + '/albums'
-                tracks = 'http://localhost:5000/artists/' + artist_id + '/tracks'
-                self_ = 'http://localhost:5000/artists/' + artist_id
+                albums = 'https://tarea2-mjbraun.herokuapp.com/artists/' + artist_id + '/albums'
+                tracks = 'https://tarea2-mjbraun.herokuapp.com/artists/' + artist_id + '/tracks'
+                self_ = 'https://tarea2-mjbraun.herokuapp.com/artists/' + artist_id
                 artists_db.insert_one({
                     'artist_id': artist_id,
                     'name': name,
@@ -70,8 +70,8 @@ def create_album(artist_id):
                 album_exists = get_album(album_id).get_json()
                 if 'message' in artist_exists:
                     artist = artists_db.find_one({'artist_id': artist_id})['self']
-                    tracks = 'http://localhost:5000/albums/' + album_id + '/tracks'
-                    self_ = 'http://localhost:5000/albums/' + album_id
+                    tracks = 'https://tarea2-mjbraun.herokuapp.com/albums/' + album_id + '/tracks'
+                    self_ = 'https://tarea2-mjbraun.herokuapp.com/albums/' + album_id
                     albums_db.insert({
                         'album_id': album_id,
                         'name': name,
@@ -118,8 +118,8 @@ def create_track(album_id):
                     times_played = '0'
                     artist = albums_db.find_one({'album_id': album_id})['artist']
                     artist_id = albums_db.find_one({'album_id': album_id})['artist_id']
-                    album = 'http://localhost:5000/albums/' + album_id
-                    self_ = 'http://localhost:5000/albums/' + album_id + '/tracks'
+                    album = 'https://tarea2-mjbraun.herokuapp.com/albums/' + album_id
+                    self_ = 'https://tarea2-mjbraun.herokuapp.com/albums/' + album_id + '/tracks'
                     tracks_db.insert({
                         'track_id': track_id,
                         'name': name,
@@ -303,16 +303,14 @@ def play_track(track_id):
 def delete_artist(artist_id):
     artist_exists = get_artist(artist_id).get_json()
     if 'message' not in artist_exists:
-        tracks = list(tracks_db.find({'artist': 'http://localhost:5000/artists/' + artist_id}))
+        tracks = list(tracks_db.find({'artist_id': artist_id}))
         if len(tracks) > 0:
             for track in tracks:
                 delete_track(track['track_id'])
-                print('track eliminado')
-        albums = list(albums_db.find({'artist': 'http://localhost:5000/artists/' + artist_id}))
+        albums = list(albums_db.find({'artist_id': artist_id}))
         if len(albums) > 0:
             for album in albums:
                 delete_album(album['album_id'])
-                print('album eliminado')
         artists_db.delete_one({'artist_id': artist_id})
         response = json_util.dumps({'message': 'artista eliminado'})
         status = 204
@@ -325,6 +323,10 @@ def delete_artist(artist_id):
 def delete_album(album_id):
     album = albums_db.find_one({'album_id': album_id})
     if album != None:
+        tracks = list(tracks_db.find({'album_id': album_id}))
+        if len(tracks) > 0:
+            for track in tracks:
+                delete_track(track['track_id'])
         albums_db.delete_one({'album_id': album_id})
         response = json_util.dumps({'message': 'álbum eliminado'})
         status = 204
