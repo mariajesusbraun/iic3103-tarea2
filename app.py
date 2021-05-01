@@ -106,8 +106,8 @@ def create_album(artist_id):
 
 @app.route('/albums/<album_id>/tracks', methods=['POST'])
 def create_track(album_id):
-    album_exists = albums_db.find_one(album_id)
-    if album_exists != None:
+    album_exists = get_album(album_id).get_json()
+    if 'message' not in  album_exists:
         if 'name' in request.json and 'duration' in request.json:
             name = request.json['name']
             duration = request.json['duration']
@@ -142,16 +142,16 @@ def create_track(album_id):
                     })
                     status = 201
                 else:
-                    response = json_util.dumps(track_exists)
+                    response = json_util.dumps([{'message': 'canción ya existe', 'code': '409'}, track_exists])
                     status = 409
             else:
-                response = json_util.dumps({'message': 'input invalido', 'code': '400'})
+                response = json_util.dumps({'message': 'input inválido', 'code': '400'})
                 status = 400
         else:
-            response = json_util.dumps({'message': 'input invalido', 'code': '400'})
+            response = json_util.dumps({'message': 'input inválido', 'code': '400'})
             status = 400
     else:
-        response = json_util.dumps({'message': 'album no existe', 'code': '422'})
+        response = json_util.dumps({'message': 'álbum no existe', 'code': '422'})
         status = 422
     return Response(response, mimetype='application/json', status=status)
 
