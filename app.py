@@ -106,7 +106,7 @@ def create_album(artist_id):
 
 @app.route('/albums/<album_id>/tracks', methods=['POST'])
 def create_track(album_id):
-    album_exists = get_album(album_id).get_json()
+    """ album_exists = get_album(album_id).get_json()
     if 'message' not in album_exists:
         if 'name' in request.json and 'duration' in request.json:
             name = request.json['name']
@@ -152,7 +152,54 @@ def create_track(album_id):
             status = 400
     else:
         response = json_util.dumps({'message': 'album no existe', 'code': '422'})
-        status = 422
+        status = 422 """
+    if 'name' in request.json and 'duration' in request.json:
+        name = request.json['name']
+        duration = request.json['duration']
+        if type(name) == str and type(duration) == float:
+            album_exists = get_album(album_id).get_json()
+            if 'message' not in album_exists:
+                track_id = b64encode(name.encode()).decode('utf-8')[0:22]
+                track_exists = get_track(track_id).get_json()
+                if 'message' in track_exists:
+                    times_played = '0'
+                    artist = albums_db.find_one({'album_id': album_id})['artist']
+                    artist_id = albums_db.find_one({'album_id': album_id})['artist_id']
+                    album = 'https://tarea2-mjbraun.herokuapp.com/albums/' + album_id
+                    self_ = 'https://tarea2-mjbraun.herokuapp.com/albums/' + album_id + '/tracks'
+                    tracks_db.insert({
+                        'track_id': track_id,
+                        'name': name,
+                        'duration': duration,
+                        'times_played': times_played,
+                        'artist': artist,
+                        'artist_id': artist_id,
+                        'album_id': album_id,
+                        'album': album,
+                        'self': self_
+                    })
+                    response = json_util.dumps({
+                        'id': str(track_id),
+                        'name': name,
+                        'duration': duration,
+                        'times_played': times_played,
+                        'artist': artist,
+                        'album': album,
+                        'self': self_
+                    })
+                    status = 201
+                else:
+                    response = json_util.dumps(track_exists)
+                    status = 409
+            else:
+                response = json_util.dumps({'message': 'album no existe', 'code': '422'})
+                status = 422
+        else:
+            response = json_util.dumps({'message': 'input invalido', 'code': '400'})
+            status = 400
+    else:
+        response = json_util.dumps({'message': 'input invalido', 'code': '400'})
+        status = 400
     return Response(response, mimetype='application/json', status=status)
 
 # GET
