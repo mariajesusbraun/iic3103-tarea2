@@ -106,8 +106,8 @@ def create_album(artist_id):
 
 @app.route('/albums/<album_id>/tracks', methods=['POST'])
 def create_track(album_id):
-    album_exists = get_album(album_id).get_json()
-    if 'message' not in  album_exists:
+    album_exists = album_exists = albums_db.find_one({'album_id': album_id})
+    if album_exists != None:
         if 'name' in request.json and 'duration' in request.json:
             name = request.json['name']
             duration = request.json['duration']
