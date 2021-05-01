@@ -349,5 +349,11 @@ def delete_track(track_id):
         status = 404
     return Response(response, mimetype='application/json', status=status)
 
+@app.errorhandler(405)
+def method_not_allowed(error=None):
+    response = json_util.dumps({'message': 'Method Not Allowed', 'code': '405'})
+    status = 405
+    return Response(response, mimetype='application/json', status=status)
+
 if __name__ == "__main__":
     app.run(debug=True)
