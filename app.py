@@ -142,16 +142,16 @@ def create_track(album_id):
                     })
                     status = 201
                 else:
-                    response = json_util.dumps([{'message': 'canción ya existe', 'code': '409'}, track_exists])
+                    response = json_util.dumps([{'message': 'cancion ya existe', 'code': '409'}, track_exists])
                     status = 409
             else:
-                response = json_util.dumps({'message': 'input inválido', 'code': '400'})
+                response = json_util.dumps({'message': 'input invalido', 'code': '400'})
                 status = 400
         else:
-            response = json_util.dumps({'message': 'input inválido', 'code': '400'})
+            response = json_util.dumps({'message': 'input invalido', 'code': '400'})
             status = 400
     else:
-        response = json_util.dumps({'message': 'álbum no existe', 'code': '422'})
+        response = json_util.dumps({'message': 'album no existe', 'code': '422'})
         status = 422
     return Response(response, mimetype='application/json', status=status)
 
