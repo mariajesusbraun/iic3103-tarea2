@@ -157,8 +157,8 @@ def create_track(album_id):
         name = request.json['name']
         duration = request.json['duration']
         if type(name) == str and type(duration) == float:
-            album_exists = get_album(album_id).get_json()
-            if 'message' not in album_exists:
+            album_exists = albums_db.find_one({'album_id': album_id})
+            if album_exists != None:
                 track_id = b64encode(name.encode()).decode('utf-8')[0:22]
                 track_exists = get_track(track_id).get_json()
                 if 'message' in track_exists:
