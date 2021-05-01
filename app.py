@@ -117,7 +117,7 @@ def create_track(album_id):
                 track_id = b64encode(to_encode.encode()).decode('utf-8')[0:22]
                 track_exists = get_track(track_id).get_json()
                 if 'message' in track_exists:
-                    times_played = '0'
+                    times_played = 0
                     artist = albums_db.find_one({'album_id': album_id})['artist']
                     artist_id = albums_db.find_one({'album_id': album_id})['artist_id']
                     album = 'https://tarea2-mjbraun.herokuapp.com/albums/' + album_id
@@ -256,7 +256,7 @@ def play_tracks_from_artist(artist_id):
         tracks = list(tracks_db.find({'artist_id': artist_id}))
         for track in tracks:
             track_id = track['track_id']
-            times_played = str(int(track['times_played']) + 1)
+            times_played = track['times_played'] + 1
             tracks_db.update_one({'track_id': track_id}, {'$set': {
                 'times_played': times_played
             }})
@@ -274,7 +274,7 @@ def play_tracks_from_album(album_id):
         tracks = list(tracks_db.find({'album_id': album_id}))
         for track in tracks:
             track_id = track['track_id']
-            times_played = str(int(track['times_played']) + 1)
+            times_played = track['times_played'] + 1
             tracks_db.update_one({'track_id': track_id}, {'$set': {
                 'times_played': times_played
             }})
@@ -289,7 +289,7 @@ def play_tracks_from_album(album_id):
 def play_track(track_id):
     track = tracks_db.find_one({'track_id': track_id})
     if track != None:
-        times_played = str(int(track['times_played']) + 1)
+        times_played = track['times_played'] + 1
         tracks_db.update_one({'track_id': track_id}, {'$set': {
             'times_played': times_played
         }})
